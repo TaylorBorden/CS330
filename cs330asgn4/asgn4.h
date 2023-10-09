@@ -84,12 +84,28 @@ int* reverseMyArrayPlease(int size, int *myArray){
 /* Note: main() goes in the asgn4.c file                                     */
 
 
+
+
+
+
+   
+
+
+// Function to convert decimal to binary
 char* convertDecToBin(int decimal) {
-    char* binary_array = (char*)malloc(NUMBER_OF_BITS + 1); // +1 for null terminator
+    // Allocate memory for a 32-bit binary number + 1 for the null terminator
+    char* binary_array = (char*)malloc(NUMBER_OF_BITS + 1); 
+     // Check if memory allocation failed and Null-terminate the
     if (binary_array == NULL) {
         printf("Memory allocation failed.\n");
         exit(1);
     }
+
+
+    /*  Convert decimal to binary
+        Set the least significant bit as '1' or '0'
+        Right shift the decimal number by 1
+    */
 
     for (int i = NUMBER_OF_BITS - 1; i >= 0; i--) {
         binary_array[i] = (decimal & 1) ? '1' : '0';
@@ -100,6 +116,16 @@ char* convertDecToBin(int decimal) {
     return binary_array;
 }
 
+
+
+
+
+
+
+
+
+
+// Function to convert binary to decimal
 int* convertBinToDec(const char* binary) {
     int* decimal_array = (int*)malloc(sizeof(int));
     if (decimal_array == NULL) {
@@ -109,6 +135,7 @@ int* convertBinToDec(const char* binary) {
 
     *decimal_array = 0;
     for (int i = 0; i < NUMBER_OF_BITS; i++) {
+         // Left shift the power by 1
         *decimal_array <<= 1;
         *decimal_array |= (binary[i] == '1') ? 1 : 0;
     }
@@ -116,24 +143,44 @@ int* convertBinToDec(const char* binary) {
     return decimal_array;
 }
 
+
+
+
+
+
+
+
+
+// Function to convert decimal to hexadecimal
 char* convertDecToHex(int decimal) {
-    char* hex_array = (char*)malloc(NUMBER_OF_HEX_DIGITS + 1); // +1 for null terminator
+    // Allocate memory for a 32-bit hexadecimal number + 1 for the null terminator
+    char* hex_array = (char*)malloc(NUMBER_OF_HEX_DIGITS + 1); 
+    // Check if memory allocation failed
     if (hex_array == NULL) {
         printf("Memory allocation failed.\n");
         exit(1);
     }
-
+    // Convert decimal to hexadecimal
     snprintf(hex_array, NUMBER_OF_HEX_DIGITS + 1, "%04X", decimal);
     return hex_array;
 }
 
+
+
+
+
+
+
+
+
+// Function to convert hexadecimal to decimal
 int* convertHexToDec(const char* hex) {
     int* decimal_array = (int*)malloc(sizeof(int));
     if (decimal_array == NULL) {
         printf("Memory allocation failed.\n");
         exit(1);
     }
-
+    // Convert hexadecimal to decimal
     sscanf(hex, "%X", decimal_array);
     return decimal_array;
 }

@@ -15,12 +15,12 @@ int main() {
     printf("4. Hexadecimal to Decimal\n");
     printf("Enter your choice: ");
 
-    // Read the user's choice
+    // choose from above
     scanf("%d", &choice);
 
     switch (choice) {
         case 1:
-            // If the user chose Decimal to Binary conversion
+            // You chose Decimal to Binary conversion
             printf("Enter a decimal number: ");
             scanf("%d", &decimal);
 
@@ -35,7 +35,7 @@ int main() {
             break;
 
         case 2:
-            // If the user chose Binary to Decimal conversion
+            // You chose Binary to Decimal conversion
             printf("Enter a binary number (16 bits): ");
             char binaryInput[NUMBER_OF_BITS + 1];
 
@@ -53,7 +53,7 @@ int main() {
             break;
 
         case 3:
-            // If the user chose Decimal to Hexadecimal conversion
+            // You chose Decimal to Hexadecimal conversion
             printf("Enter a decimal number: ");
             scanf("%d", &decimal);
 
@@ -68,11 +68,11 @@ int main() {
             break;
 
         case 4:
-            // If the user chose Hexadecimal to Decimal conversion
+            // You chose Hexadecimal to Decimal conversion
             printf("Enter a hexadecimal number (up to 4 characters): ");
             char hexInput[NUMBER_OF_HEX_DIGITS + 1];
 
-            // Read the hexadecimal input as a string
+            // Read the hexadecimal input 
             scanf("%4s", hexInput);
 
             // Convert hexadecimal to decimal and store the result in 'decimal_array'
@@ -86,7 +86,7 @@ int main() {
             break;
 
         default:
-            // If the user entered an invalid choice
+            // invalid choice
             printf("Invalid choice.\n");
     }
 
