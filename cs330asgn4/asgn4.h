@@ -93,7 +93,7 @@ int* reverseMyArrayPlease(int size, int *myArray){
 
 // Function to convert decimal to binary
 char* convertDecToBin(int decimal) {
-    // Allocate memory for a 32-bit binary number + 1 for the null terminator
+    // Allocate memory for the  NUMBER_OF_BITS and a + 1 for the null terminator
     char* binary_array = (char*)malloc(NUMBER_OF_BITS + 1); 
      // Check if memory allocation failed and Null-terminate the
     if (binary_array == NULL) {
@@ -153,7 +153,7 @@ int* convertBinToDec(const char* binary) {
 
 // Function to convert decimal to hexadecimal
 char* convertDecToHex(int decimal) {
-    // Allocate memory for a 32-bit hexadecimal number + 1 for the null terminator
+    // Allocate memory for the NUMBER_OF_HEX_DIGITS and a + 1 for the null terminator
     char* hex_array = (char*)malloc(NUMBER_OF_HEX_DIGITS + 1); 
     // Check if memory allocation failed
     if (hex_array == NULL) {
