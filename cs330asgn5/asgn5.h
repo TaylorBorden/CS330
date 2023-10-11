@@ -26,6 +26,9 @@ int sizeOfString(char *arr){
 /* your functions go here */
 // Note: main() goes in the asgn2.c file
 
+
+
+// Function to convert an integer to a string
 char *itoa_cs330(int num)
 {
     if (num == 0)
@@ -69,7 +72,7 @@ char *itoa_cs330(int num)
     return str;
 }
 
-// funtion to take an str input from user and return it as a int
+// Function to convert a string to an integer
 int atoi_cs330(char *str)
 {
     int result = 0;
@@ -99,7 +102,7 @@ int atoi_cs330(char *str)
         }
         else
         {
-            return 0;
+            return 0; // Error: Invalid character in the string
         }
         i++;
     }
