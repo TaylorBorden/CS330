@@ -31,6 +31,7 @@ int sizeOfString(char *arr){
 // Function to convert an integer to a string
 char *itoa_cs330(int num)
 {
+    // If input is 0, return the string as a "0"
     if (num == 0)
     {
         char *str = (char *)malloc(1);
@@ -40,74 +41,82 @@ char *itoa_cs330(int num)
 
     int len = 0;
     int temp = num;
-    while (temp != 0)
+    while (temp != 0) //take the number of digits
     {
         len++;
         temp /= 10;
     }
 
+    // Check if number is negative 
     int sign = 1;
     if (num < 0)
     {
         sign = -1;
         len++;
     }
-
+    
+    // Allocate memory for the string based on the len length of the numbers
     char *str = (char *)malloc(len + 1);
     str[len] = '\0';
 
     for (int i = len - 1; i >= 0; i--)
     {
+         // If we're at the last digit and the number is negative, set the '-' sign
         if (i == 0 && sign == -1)
         {
             str[0] = '-';
         }
         else
         {
+            // Convert the last digit to a character and store it in the string
             str[i] = abs(num % 10) + '0';
             num /= 10;
         }
     }
-
+    // Return the resulting string representation of the number
     return str;
 }
 
 // Function to convert a string to an integer
 int atoi_cs330(char *str)
 {
-    int result = 0;
-    int sign = 1;
-    int i = 0;
+    int result = 0; // Intitialize resut to 0
+    int sign = 1; // Initialize sign to positive '+'
+    int i = 0; // Initialize our index var
 
+    // if the input string is empty return 0
     if (str[0] == '\0')
     {
         return 0;
     }
-
+    // Check for a negative '-' sign and fix
     if (str[0] == '-')
     {
         sign = -1;
         i++;
     }
+    // Check for a positive '+' sign and increment the index 
     else if (str[0] == '+')
     {
         i++;
     }
-
+    // Create a loop through the string str characters and convert them to an integer
     while (str[i] != '\0')
     {
+        // Check the range from 0 to 9
         if (str[i] >= '0' && str[i] <= '9')
         {
+            // Convert the character to an integer and add it to the result
             result = result * 10 + (str[i] - '0');
         }
         else
         {
-            return 0; // Error: Invalid character in the string
+            return 0; // Error: If invalid character in string str return 0
         }
         i++;
     }
 
-    return sign * result;
+    return sign * result; // Return the result with the appropriate sign
 }
 
 
