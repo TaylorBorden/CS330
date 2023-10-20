@@ -28,6 +28,11 @@ int sizeOfString(char *arr){
 
 
 
+
+
+
+
+
 // Function to convert an integer to a string
 char *itoa_cs330(int num)
 {
@@ -73,7 +78,7 @@ char *itoa_cs330(int num)
             num /= 10;
         }
     }
-    // Return the resulting string representation of the number
+    // Return the now new string representation of the number
     return str;
 }
 
