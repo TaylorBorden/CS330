@@ -33,10 +33,10 @@ int sizeOfString(char *arr){
 
 
 
-// Function to convert an integer to a string
+// integer to string function
 char *itoa_cs330(int num)
 {
-    // If input is 0, return the string as a "0"
+    // If input is 0 print a " "
     if (num == 0)
     {
         char *str = (char *)malloc(1);
@@ -46,13 +46,14 @@ char *itoa_cs330(int num)
 
     int len = 0;
     int temp = num;
-    while (temp != 0) //take the number of digits
+    while (temp != 0) 
+
     {
         len++;
         temp /= 10;
     }
 
-    // Check if number is negative 
+    // Check for a negative sign
     int sign = 1;
     if (num < 0)
     {
@@ -60,47 +61,47 @@ char *itoa_cs330(int num)
         len++;
     }
     
-    // Allocate memory for the string based on the len length of the numbers
+    // Allocate memory for the string based on the length of the number and +1 for the '/0'
     char *str = (char *)malloc(len + 1);
     str[len] = '\0';
 
     for (int i = len - 1; i >= 0; i--)
     {
-         // If we're at the last digit and the number is negative, set the '-' sign
+         
         if (i == 0 && sign == -1)
         {
             str[0] = '-';
         }
         else
         {
-            // Convert the last digit to a character and store it in the string
+            
             str[i] = abs(num % 10) + '0';
             num /= 10;
         }
     }
-    // Return the now new string representation of the number
+    // Return our output now as a string
     return str;
 }
 
-// Function to convert a string to an integer
+// String to Integer function
 int atoi_cs330(char *str)
 {
     int result = 0; // Intitialize resut to 0
-    int sign = 1; // Initialize sign to positive '+'
-    int i = 0; // Initialize our index var
+    int sign = 1; // Initialize sign to positive 
+    int i = 0; // Initialize our index variable
 
-    // if the input string is empty return 0
+    // if the string is empty return a '0'
     if (str[0] == '\0')
     {
         return 0;
     }
-    // Check for a negative '-' sign and fix
+    // Check for a negative sign
     if (str[0] == '-')
     {
         sign = -1;
         i++;
     }
-    // Check for a positive '+' sign and increment the index 
+    
     else if (str[0] == '+')
     {
         i++;
@@ -116,7 +117,7 @@ int atoi_cs330(char *str)
         }
         else
         {
-            return 0; // Error: If invalid character in string str return 0
+            return 0; // Error: If invalid character in string return 0
         }
         i++;
     }
