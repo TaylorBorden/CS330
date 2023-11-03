@@ -1,136 +1,111 @@
 .data
-    promptA: .string "Enter value for A: "
-    promptB: .string "Enter value for B: "
-    result1: .string "Result 1: %d\n"
-    result2: .string "Result 2: %d\n"
-    result3: .string "Result 3: %d\n"
+format_input: .string "%ld"           # Format string for input
+format_output: .string "%ld\n"        # Format string for output with a newline
+prompt_A: .string "Enter value for A: "  # Prompt for A input
+prompt_B: .string "Enter value for B: "  # Prompt for B input
+A: .quad 0                             # Variable A initialized with 0
+B: .quad 0                             # Variable B initialized with 0
 
 .text
 .global main
 
 # Function to compute A * 5
 multiply_by_5:
-    pushl %ebp
-    movl %esp, %ebp
-    pushl %ebx
+    pushq %rbp
+    movq %rsp, %rbp
 
-    movl 8(%ebp), %eax   # Load A into eax
-    movl $5, %ebx        # Load 5 into ebx
-    imull %ebx, %eax     # Multiply A by 5
+    movq A(%rip), %rax   # Load A into rax
+    movq $5, %rbx        # Load 5 into rbx
+    imulq %rbx, %rax     # Multiply A by 5
 
-    popl %ebx
-    popl %ebp
+    leave
     ret
 
-# Function to compute (A + B) - (A / B)
+# Function to compute (A + B) - (A/B)
 subtract_and_divide:
-    pushl %ebp
-    movl %esp, %ebp
-    pushl %ebx
-    pushl %esi
-    pushl %edi
+    pushq %rbp
+    movq %rsp, %rbp
 
-    movl 8(%ebp), %eax   # Load A into eax
-    movl 12(%ebp), %ebx  # Load B into ebx
-    addl %ebx, %eax      # A + B
-    xorl %edx, %edx      # Clear edx for division
-    idivl %ebx            # Divide eax by B
+    movq A(%rip), %rax   # Load A into rax
+    movq B(%rip), %rbx   # Load B into rbx
 
-    subl %eax, %ebx       # (A + B) - (A / B)
+    # Check if B is zero
+    cmpq $0, %rbx
+    je division_by_zero_error
 
-    popl %edi
-    popl %esi
-    popl %ebx
-    popl %ebp
+    addq %rbx, %rax      # A + B
+    xorq %rdx, %rdx      # Clear rdx for division
+    cqto                 # Sign-extend rax into rdx:rax
+    idivq %rbx           # Divide rdx:rax by B
+
+    subq %rax, %rbx      # (A + B) - (A / B)
+
+    leave
     ret
 
 # Function to compute (A - B) + (A * B)
 add_and_multiply:
-    pushl %ebp
-    movl %esp, %ebp
-    pushl %ebx
-    pushl %esi
-    pushl %edi
+    pushq %rbp
+    movq %rsp, %rbp
 
-    movl 8(%ebp), %eax   # Load A into eax
-    movl 12(%ebp), %ebx  # Load B into ebx
-    subl %ebx, %eax      # A - B
-    imull %ebx, %eax     # Multiply (A - B) by B
+    movq A(%rip), %rax   # Load A into rax
+    movq B(%rip), %rbx   # Load B into rbx
 
-    addl %eax, %ebx       # (A - B) + (A * B)
+    subq %rbx, %rax      # A - B
+    imulq %rbx, %rax     # Multiply (A - B) by B
 
-    popl %edi
-    popl %esi
-    popl %ebx
-    popl %ebp
-    ret
+    addq %rax, %rbx      # (A - B) + (A * B)
 
-main:
-    pushl %ebp
-    movl %esp, %ebp
-
-    pushl $promptA
-    call printf
-    addl $4, %esp
-
-    pushl $0    # Placeholder for scanf result
-    pushl $a    # Address of A
-    pushl $format
-    call scanf
-    addl $12, %esp
-
-    pushl $promptB
-    call printf
-    addl $4, %esp
-
-    pushl $0    # Placeholder for scanf result
-    pushl $b    # Address of B
-    pushl $format
-    call scanf
-    addl $12, %esp
-
-    pushl b
-    pushl a
-    call multiply_by_5
-    addl $8, %esp
-    movl %eax, resultA
-
-    pushl b
-    pushl a
-    call subtract_and_divide
-    addl $8, %esp
-    movl %eax, resultB
-
-    pushl b
-    pushl a
-    call add_and_multiply
-    addl $8, %esp
-    movl %eax, resultC
-
-    pushl resultC
-    pushl $result3
-    call printf
-    addl $8, %esp
-
-    pushl resultB
-    pushl $result2
-    call printf
-    addl $8, %esp
-
-    pushl resultA
-    pushl $result1
-    call printf
-    addl $8, %esp
-
-    movl $0, %eax   # Exit with status 0
     leave
     ret
 
-.section .bss
-a: .lcomm 4
-b: .lcomm 4
-format: .string "%d"
-resultA: .int 0
-resultB: .int 0
-resultC: .int 0
+main:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    # Prompt for A
+    mov $0, %edi
+    lea prompt_A(%rip), %rsi
+    lea A(%rip), %rdi
+    call scanf
+
+    # Prompt for B
+    mov $0, %edi
+    lea prompt_B(%rip), %rsi
+    lea B(%rip), %rdi
+    call scanf
+
+    # Call the functions and store results
+    call multiply_by_5
+    movq %rax, A(%rip)  # Update A with the result
+
+    call subtract_and_divide
+    movq %rbx, B(%rip)  # Update B with the result
+
+    call add_and_multiply
+    movq %rax, A(%rip)  # Update A with the result
+
+    # Display results
+    mov $0, %edi
+    lea format_output(%rip), %rsi
+
+    # Result 1
+    movq A(%rip), %rdx
+    call printf
+
+    # Result 2
+    movq B(%rip), %rdx
+    call printf
+
+    leave
+    ret
+
+division_by_zero_error:
+    # Display division by zero error and exit
+    mov $1, %edi
+    lea format_output(%rip), %rsi
+    call printf
+
+    leave
+    ret
 
