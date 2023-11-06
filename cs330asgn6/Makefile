@@ -1,4 +1,4 @@
-FILE = asgn6
+FILE = min_template
 
 build: $(FILE).s
 	# next line compiles with all warnings on, debug info, and links math lib
