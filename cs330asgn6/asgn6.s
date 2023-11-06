@@ -1,25 +1,22 @@
 .section .data
-format_input: .string "%ld %ld"
+format_input: .string "%d %d"
 format_output: .string "%ld\n"
 prompt_A: .string "Enter value for A: "
 prompt_B: .string "Enter value for B: "
 A: .quad 0
 B: .quad 0
-
-.section .text
-.globl main
-
-# Callee-saved registers
-.data
 rbp_save: .quad 0
 rbx_save: .quad 0
+
+.text
+.global main
+
 
 # Function to compute A * 5
 multiply_by_5:
     pushq %rbp
     movq %rsp, %rbp
-    movq %rbp, rbp_save(%rip)
-    movq %rbx, rbx_save(%rip)
+    push %rbx
 
     movq A(%rip), %rax   # Load A into rax
     movq $5, %rbx        # Load 5 into rbx
@@ -86,23 +83,23 @@ main:
     pushq %rcx
 
     # Prompt for A and B
-    lea prompt_A(%rip), %rdi
-    lea A(%rip), %rsi
-    lea B(%rip), %rdx
+    mov $prompt_A, %rdi
+    mov $A, %rsi
+    mov $B, %rdx
     call scanf
 
     # Call the functions and store results
     call multiply_by_5
-    movq %rax, A(%rip)  # Update A with the result
+    movq %rax, A  # Update A with the result
 
     call subtract_and_divide
-    movq %rbx, B(%rip)  # Update B with the result
+    movq %rbx, B  # Update B with the result
 
     call add_and_multiply
-    movq %rax, A(%rip)  # Update A with the result
+    movq %rax, A  # Update A with the result
 
     # Display results
-    lea format_output(%rip), %rdi
+    mov $format_output, %rdi
 
     # Result 1
     movq A(%rip), %rsi
