@@ -104,6 +104,7 @@ division_by_zero_error:
     # Display division by zero error and exit
     mov $1, %edi
     lea format_output(%rip), %rsi
+    mov $0, %rax  # Clear RAX
     call printf
 
     leave
