@@ -1,30 +1,40 @@
-.data
-format_input: .string "%ld"           # Format string for input
-format_output: .string "%ld\n"        # Format string for output with a newline
-prompt_A: .string "Enter value for A: "  # Prompt for A input
-prompt_B: .string "Enter value for B: "  # Prompt for B input
-A: .quad 0                             # Variable A initialized with 0
-B: .quad 0                             # Variable B initialized with 0
+.section .data
+format_input: .string "%ld %ld"
+format_output: .string "%ld\n"
+prompt_A: .string "Enter value for A: "
+prompt_B: .string "Enter value for B: "
+A: .quad 0
+B: .quad 0
 
-.text
-.global main
+.section .text
+.globl main
+
+# Callee-saved registers
+.data
+rbp_save: .quad 0
+rbx_save: .quad 0
 
 # Function to compute A * 5
 multiply_by_5:
     pushq %rbp
     movq %rsp, %rbp
+    movq %rbp, rbp_save(%rip)
+    movq %rbx, rbx_save(%rip)
 
     movq A(%rip), %rax   # Load A into rax
     movq $5, %rbx        # Load 5 into rbx
     imulq %rbx, %rax     # Multiply A by 5
 
-    leave
+    popq %rbx
+    popq %rbp
     ret
 
 # Function to compute (A + B) - (A/B)
 subtract_and_divide:
     pushq %rbp
     movq %rsp, %rbp
+    movq %rbp, rbp_save(%rip)
+    movq %rbx, rbx_save(%rip)
 
     movq A(%rip), %rax   # Load A into rax
     movq B(%rip), %rbx   # Load B into rbx
@@ -40,13 +50,16 @@ subtract_and_divide:
 
     subq %rax, %rbx      # (A + B) - (A / B)
 
-    leave
+    popq %rbx
+    popq %rbp
     ret
 
 # Function to compute (A - B) + (A * B)
 add_and_multiply:
     pushq %rbp
     movq %rsp, %rbp
+    movq %rbp, rbp_save(%rip)
+    movq %rbx, rbx_save(%rip)
 
     movq A(%rip), %rax   # Load A into rax
     movq B(%rip), %rbx   # Load B into rbx
@@ -56,23 +69,26 @@ add_and_multiply:
 
     addq %rax, %rbx      # (A - B) + (A * B)
 
-    leave
+    popq %rbx
+    popq %rbp
     ret
 
 main:
     pushq %rbp
     movq %rsp, %rbp
 
-    # Prompt for A
-    mov $0, %edi
-    lea prompt_A(%rip), %rsi
-    lea A(%rip), %rdi
-    call scanf
+    subq $16, %rsp  # Make room for A and B on the stack
 
-    # Prompt for B
-    mov $0, %edi
-    lea prompt_B(%rip), %rsi
-    lea B(%rip), %rdi
+    # Caller-saved registers
+    pushq %rdi
+    pushq %rsi
+    pushq %rdx
+    pushq %rcx
+
+    # Prompt for A and B
+    lea prompt_A(%rip), %rdi
+    lea A(%rip), %rsi
+    lea B(%rip), %rdx
     call scanf
 
     # Call the functions and store results
@@ -86,16 +102,21 @@ main:
     movq %rax, A(%rip)  # Update A with the result
 
     # Display results
-    mov $0, %edi
-    lea format_output(%rip), %rsi
+    lea format_output(%rip), %rdi
 
     # Result 1
-    movq A(%rip), %rdx
+    movq A(%rip), %rsi
     call printf
 
     # Result 2
-    movq B(%rip), %rdx
+    movq B(%rip), %rsi
     call printf
+
+    # Caller-saved registers
+    popq %rcx
+    popq %rdx
+    popq %rsi
+    popq %rdi
 
     leave
     ret
@@ -104,10 +125,7 @@ division_by_zero_error:
     # Display division by zero error and exit
     mov $1, %edi
     lea format_output(%rip), %rsi
-    mov $0, %rax  # Clear RAX
     call printf
 
     leave
     ret
-
-    
