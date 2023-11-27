@@ -118,8 +118,13 @@ int drawScreen(int rows, int cols, int *map){
 
 
 
-
 //start of valid move
+
+/*
+    this function checks whether a move requested by the player is valid based
+    on the game's rules, map boundaries, walls, and player interaction with thr stars on the grid.
+    it returns 1 for a valid move and 0 for an invalid one.
+*/
 int validMove(int direction, Player *p, int *map) {
     // Calculate new player position after move
     int newPlayerX = p->x + dX[direction];
@@ -174,6 +179,14 @@ int validMove(int direction, Player *p, int *map) {
 
 
 //start of move player
+
+
+/*
+    This function deals with the movement of the player in the game grid while considering the rules specific to each type of square.
+    (empty space, goal space, star, etc.), making sure that the moves are valid.
+    Also, it keeps track of the number of steps taken and the stars solved based on the movement of the player and the stars within the grid.
+
+*/
 void movePlayer(int direction, Player *p, int *map) {
     // Calculate new player position after move
     int newPlayerX = p->x + dX[direction];
@@ -362,15 +375,20 @@ int main(){
 
 
        // Check if the player has won
+
+
+
+
     int coinsWithStars = 0;
 
     // Check if each coin has a star on it
     for (int i = 0; i < MAP_ROWS * MAP_COLS; i++) {
+    // Check if the current element in the map represents a coin with a star
     if (map[i] == 4 || map[i] == 6) {
-        coinsWithStars++;
+        coinsWithStars++; // Increment the count of coins with stars
     }
 }
-
+    // Check if all coins have stars
     if (coinsWithStars == 3) {
     mvwprintw(score_win, 2, (WIN_WIDTH - 10) / 2, "YOU WIN !!");
     wrefresh(score_win);
